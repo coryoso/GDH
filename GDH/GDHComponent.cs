@@ -28,6 +28,8 @@ using Rhino.Runtime;
 using SaveFileDialog = Eto.Forms.SaveFileDialog;
 using MessageBox = Eto.Forms.MessageBox;
 using FileFilter = Eto.Forms.FileFilter;
+using Eto.Forms;
+using OpenFileDialog = Eto.Forms.OpenFileDialog;
 
 namespace GDH
 {
@@ -172,7 +174,7 @@ namespace GDH
 			{
 				if (_remoteDefinition != null)
 				{
-					return _remoteDefinition.Path;
+					return Path.GetFileName(_remoteDefinition.Path);
 				}
 				return string.Empty;
 			}
@@ -256,6 +258,10 @@ namespace GDH
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
+			if (String.IsNullOrEmpty(HopsAppSettings.GoogleDrivePath))
+			{
+				((GH_ActiveObject)this).AddRuntimeMessage((GH_RuntimeMessageLevel)20, $"Pls setup gdrive path");
+			}
 			if (!_enabledThisSolve)
 			{
 				return;
@@ -523,7 +529,7 @@ namespace GDH
 		{
 			if (_hops24Icon == null)
 			{
-				_hops24Icon = new Bitmap(typeof(HopsComponent).Assembly.GetManifestResourceStream("Hops.resources.Hops_24x24.png"));
+				_hops24Icon = new Bitmap(typeof(GDHComponent).Assembly.GetManifestResourceStream("GDH.Resources.itech_24.png"));
 			}
 			return _hops24Icon;
 		}
@@ -532,7 +538,7 @@ namespace GDH
 		{
 			if (_hops48Icon == null)
 			{
-				_hops48Icon = new Bitmap(typeof(HopsComponent).Assembly.GetManifestResourceStream("Hops.resources.Hops_48x48.png"));
+				_hops48Icon = new Bitmap(typeof(GDHComponent).Assembly.GetManifestResourceStream("GDH.Resources.itech_48.png"));
 			}
 			return _hops48Icon;
 		}
@@ -555,8 +561,22 @@ namespace GDH
 			{
 				menu.Items.RemoveAt(menu.Items.Count - 1);
 			}
+			ToolStripMenuItem tsi = new ToolStripMenuItem("&Google Drive Path...", null, delegate
+			{
+				OpenFileDialog fileDialog = new OpenFileDialog();
+				
+				if (fileDialog.ShowDialog(Instances.EtoDocumentEditor) == Eto.Forms.DialogResult.Ok)
+				{
+					string lastDirectory = Path.GetDirectoryName(fileDialog.FileName);
+					HopsAppSettings.GoogleDrivePath = lastDirectory;
+
+					this.ClearRuntimeMessages();
+				}
+			});
+			menu.Items.Add(tsi);
+
 			menu.Items.Add(new ToolStripSeparator());
-			ToolStripMenuItem tsi = new ToolStripMenuItem("&Path...", null, delegate
+			tsi = new ToolStripMenuItem("&Component...", null, delegate
 			{
 				ShowSetDefinitionUi();
 			});
@@ -908,13 +928,13 @@ namespace GDH
 				if (_remoteDefinition.IsNotResponingUrl())
 				{
 					((GH_ActiveObject)this).AddRuntimeMessage((GH_RuntimeMessageLevel)20, "Unable to connect to server");
-					((Control)(object)Instances.ActiveCanvas)?.Invalidate();
+					(Instances.ActiveCanvas)?.Invalidate();
 					return;
 				}
 				if (_remoteDefinition.IsInvalidUrl())
 				{
 					((GH_ActiveObject)this).AddRuntimeMessage((GH_RuntimeMessageLevel)20, "Path appears valid, but to something that is not Hops related");
-					((Control)(object)Instances.ActiveCanvas)?.Invalidate();
+					(Instances.ActiveCanvas)?.Invalidate();
 					return;
 				}
 				if (HTTPRecord.IOResponseSchema != null && HTTPRecord.IOResponseSchema.Errors.Count > 0)
@@ -924,7 +944,7 @@ namespace GDH
 					{
 						string error = enumerator.Current;
 						((GH_ActiveObject)this).AddRuntimeMessage((GH_RuntimeMessageLevel)20, error);
-						((Control)(object)Instances.ActiveCanvas)?.Invalidate();
+						(Instances.ActiveCanvas)?.Invalidate();
 						return;
 					}
 				}
@@ -1551,7 +1571,7 @@ namespace GDH
 					return;
 				}
 				((GH_Component)this).Params.OnParametersChanged();
-				((Control)(object)Instances.ActiveCanvas)?.Invalidate();
+				(Instances.ActiveCanvas)?.Invalidate();
 				if (recompute)
 				{
 					GH_Document doc = ((GH_DocumentObject)this).OnPingDocument();
@@ -1578,7 +1598,7 @@ namespace GDH
 					mgr.AddBooleanParameter("_Enabled", "Enabled", "Enabled state for solving", (GH_ParamAccess)0, true);
 				}
 				((GH_Component)this).Params.OnParametersChanged();
-				((Control)(object)Instances.ActiveCanvas)?.Invalidate();
+				(Instances.ActiveCanvas)?.Invalidate();
 			}
 		}
 

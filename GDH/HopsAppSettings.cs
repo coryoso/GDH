@@ -79,6 +79,23 @@ namespace GDH
 			}
 		}
 
+		public static string GoogleDrivePath
+		{
+			get
+			{
+				string path = Instances.Settings.GetValue("GDH:GDrivePath", "");
+				if (string.IsNullOrWhiteSpace(path))
+				{
+					return string.Empty;
+				}
+				return path;
+			}
+			set
+			{
+				Instances.Settings.SetValue("GDH:GDrivePath", value);
+			}
+		}
+
 		public static string APIKey
 		{
 			get

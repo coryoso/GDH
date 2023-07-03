@@ -8,6 +8,16 @@
     <TargetExt>.gha</TargetExt>
 			<LangVersion>8.0</LangVersion>
   </PropertyGroup>
+	
+  <ItemGroup>
+    <None Remove="Resources\itech_24.png" />
+    <None Remove="Resources\itech_48.png" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\itech_24.png" />
+    <EmbeddedResource Include="Resources\itech_48.png" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Grasshopper" Version="7.13.21348.13001" IncludeAssets="compile;build" />
@@ -22,6 +32,21 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 

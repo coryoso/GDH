@@ -102,7 +102,7 @@ namespace GDH
 
 		public static RemoteDefinition Create(string path, GDHComponent parentComponent)
 		{
-			RemoteDefinition rc = new RemoteDefinition(path, parentComponent);
+			RemoteDefinition rc = new RemoteDefinition(HopsAppSettings.GoogleDrivePath + "/"+ path, parentComponent);
 			if (path != null)
 			{
 				RemoteDefinitionCache.Add(rc);

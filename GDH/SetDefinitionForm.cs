@@ -92,7 +92,7 @@ namespace GDH
 			}
 			TextBox textbox = new TextBox();
 			((Control)textbox).Size=(new Size(250, -1));
-			textbox.PlaceholderText=("URL or Path");
+			textbox.PlaceholderText=("Select a component");
 			if (!string.IsNullOrWhiteSpace(Path))
 			{
 				((TextControl)textbox).Text=(Path);
@@ -109,11 +109,12 @@ namespace GDH
 				//IL_0045: Unknown result type (might be due to invalid IL or missing references)
 				//IL_004b: Invalid comparison between Unknown and I4
 				OpenFileDialog val6 = new OpenFileDialog();
+				val6.Directory = new Uri(HopsAppSettings.GoogleDrivePath);
 				((FileDialog)val6).Filters.Add(new FileFilter("Grasshopper Document", new string[2] { ".gh", ".ghx" }));
 				Window val7 = (Window)(object)(onWindows ? this : null);
 				if ((int)((CommonDialog)val6).ShowDialog(val7) == 1)
 				{
-					((TextControl)textbox).Text=(((FileDialog)val6).FileName);
+					((TextControl)textbox).Text=System.IO.Path.GetFileName((((FileDialog)val6).FileName));
 				}
 			});
 			StackLayout val3 = new StackLayout();
